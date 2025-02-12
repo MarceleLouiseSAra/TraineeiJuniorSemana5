@@ -29,6 +29,19 @@ router.get(
   },
 );
 
+router.get(
+  "/:id/musics", verifyJWT,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const artistId = Number(req.params.id);
+      const musics = await ArtistService.getMusicsByArtistId(artistId);
+      res.status(statusCodes.SUCCESS).json(musics);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 router.post(
   "/create", checkRole, verifyJWT,
   async (req: Request, res: Response, next: NextFunction) => {

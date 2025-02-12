@@ -81,6 +81,23 @@ class UserService {
     return userById;
   }
 
+  static async getUserProfile(userId: number) {
+    const user = await prisma.user.findUnique({
+      where: { id_User: userId },
+      select: {
+        id_User: true,
+        username: true,
+        email: true,
+        profilePic: true,
+        created_at: true,
+      },
+    });
+    if (!user) {
+      throw new QueryError("Usuário não encontrado!");
+    }
+    return user;
+  }
+
   static async updateUser(requestedId: number, body: User) {
     if (body.email == null) {
       throw new InvalidParamError("Email não foi informado!");
@@ -127,6 +144,19 @@ class UserService {
     await prisma.user.delete({ where: { id_User: requestedId } });
   }
 
+  static async deleteAccount(userId: number) {
+    const user = await prisma.user.findUnique({
+      where: { id_User: userId },
+    });
+    if (!user) {
+      throw new QueryError("Usuário não encontrado!");
+    }
+    await prisma.user.delete({
+      where: { id_User: userId },
+    });
+    return { message: "Conta excluída com sucesso!" };
+  }
+  
   static async listenToMusic(musicsId: number, usersId: number) {
     const musicById = await MusicService.getMusicById(musicsId);
     if (!musicById) {

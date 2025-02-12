@@ -92,7 +92,15 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 }
 
 export async function notLoggedIn(req: Request, res: Response, next: NextFunction) {
-    try {
+    try { 
+        const token = cookieExtractor(req);
+        if (token) {
+            const decoded = verify(token, process.env.SECRET_KEY || "") as JwtPayload;
+            req.user = decoded.user;
+            return res.status(statusCodes.FORBIDDEN).json({ message: "Você já está logado!" });
+        }
+        next();
+        
 
     } catch (error) {
         next (error);

@@ -29,6 +29,15 @@ class ArtistService {
     return artist;
   }
 
+  static async getMusicsByArtistId(artistId: number) {
+    const musics = await prisma.music.findMany({
+        where: { artistId },
+        orderBy: { title: "asc" },
+    });
+
+    return musics;
+}
+
   static async updateArtist(requestedId: number, body: any) {
     const updatedArtist = await prisma.artist.update({
       data: {

@@ -27,6 +27,15 @@ router.get(
   },
 );
 
+router.get("/account/profile", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userProfile = await UserService.getUserProfile(req.user.id_User);
+    res.status(statusCodes.SUCCESS).json(userProfile);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.post(
   "/create", verifyJWT,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -90,6 +99,20 @@ router.delete(
   },
 );
 
+router.delete(
+  "/account/delete", verifyJWT,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = Number(req.user.id_User);
+      await UserService.deleteUser(userId);
+      res.clearCookie("jwt");
+      res.status(statusCodes.SUCCESS).json();
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 router.post("/login", login);
 
 router.put("/account/listen/:id", verifyJWT, 
@@ -121,7 +144,7 @@ router.put("/account/password", verifyJWT,
       const userId = Number(req.user.id_User); 
       const { currentPassword, newPassword } = req.body;
       await UserService.changePassword(userId, currentPassword, newPassword);
-      res.status(statusCodes.SUCCESS).json({ message: "Senha alterada com sucesso!" });
+      res.status(statusCodes.SUCCESS).json();
     } catch (error) {
       next(error);
     }
