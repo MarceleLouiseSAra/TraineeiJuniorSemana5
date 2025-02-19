@@ -10,8 +10,8 @@ services:
     networks:
       - base_network
     ports:
-      - "${PORT_API}:${PORT_API}"
-      - "${PORTA_PRISMA}:${PORTA_PRISMA}"
+      - ${PORT_API}:${PORT_API}
+      - ${PORTA_PRISMA}:${PORTA_PRISMA}
     expose:
       - ${PORT_API}
     volumes:
@@ -27,7 +27,7 @@ services:
     image: mysql:latest
     container_name: ${NAME_CONTAINER_DB}
     ports:
-      - "${PORTA_HOST}:${PORTA_CONTAINER}"
+      - ${PORTA_HOST}:${PORTA_CONTAINER}
     volumes:
       - ${NOME_DO_VOLUME}:/var/lib/mysql
     environment:
